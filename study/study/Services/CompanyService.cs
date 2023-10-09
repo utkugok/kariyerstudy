@@ -3,6 +3,7 @@ using study.Repositories;
 using study.Repositories.Interfaces;
 using study.Services.Interfaces;
 using System.Net;
+using System.Linq;
 
 namespace study.Services
 {
@@ -10,11 +11,11 @@ namespace study.Services
     {
         private readonly ICompanyRepository _companyRepository;
 
-        public CompanyService(CompanyRepository companyRepository)
+        public CompanyService(ICompanyRepository companyRepository)
         {
-            _companyRepository = companyRepository;                
+            _companyRepository = companyRepository;
         }
-        
+
         public async Task<ResponseDto<CompanyDto>> SaveAsync(CompanyCreateDto request)
         {
             try
@@ -23,7 +24,7 @@ namespace study.Services
 
                 var checkCompany = await _companyRepository.SearchByPhoneNumberAsync(company.PhoneNumber);
 
-                if(checkCompany is not null)
+                if (checkCompany is not null)
                 {
                     throw new Exception($"{request.phoneNumber} telefon numarası zaten kayıtlıdır.");
                 }
@@ -37,5 +38,15 @@ namespace study.Services
                 return ResponseDto<CompanyDto>.Fail(ex.Message, HttpStatusCode.InternalServerError);
             }
         }
+
+        public async Task<ResponseDto<List<CompanyDto>>> GetAllAsync()
+        {
+            var companies = await _companyRepository.GetAllAsync();
+
+            var companyListDto = companies.Select(x => new CompanyDto(x.Id, x.PhoneNumber, x.CompanyName, x.Address, x.JobPostLimit, x.CreatedAt, null)).ToList();
+
+            return ResponseDto<List<CompanyDto>>.Success(companyListDto, HttpStatusCode.OK);
+        }
+
     }
 }

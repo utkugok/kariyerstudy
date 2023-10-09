@@ -1,6 +1,7 @@
 ﻿using Elastic.Clients.Elasticsearch;
 using study.Models;
 using study.Repositories.Interfaces;
+using System.ComponentModel.Design;
 using System.Text.Json;
 
 namespace study.Repositories
@@ -42,7 +43,7 @@ namespace study.Repositories
 
             if (!check.IsValidResponse)
             {
-                throw new Exception($"create company error. {check.DebugInformation}");
+                throw new Exception($"search company error. {check.DebugInformation}");
             }
 
             return check.Documents.FirstOrDefault();
@@ -71,6 +72,26 @@ namespace study.Repositories
             }
 
             return response.IsSuccess();
+        }
+
+        public async Task<IReadOnlyCollection<Company>> GetAllAsync()
+        {
+            var response = await _client.SearchAsync<Company>(s=>s
+            .Index(indexName)
+            .Query(q=>q
+            .MatchAll()));
+
+            foreach (var hit in response.Hits)
+            {
+                hit.Source.Id = hit.Id;
+            }
+
+            if (!response.IsValidResponse)
+            {
+                throw new Exception($"company getall error. {response.DebugInformation}");
+            }
+
+            return response.Documents;
         }
     }
 }

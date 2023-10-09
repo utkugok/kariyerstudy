@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using study.DTOs;
+using study.Models;
 using study.Services;
+using study.Services.Interfaces;
+using System.Collections.Generic;
 
 namespace study.Controllers
 {
@@ -9,9 +12,9 @@ namespace study.Controllers
     [ApiController]
     public class CompanyController : BaseController
     {
-        private readonly CompanyService _companyService;
+        private readonly ICompanyService _companyService;
 
-        public CompanyController(CompanyService companyService)
+        public CompanyController(ICompanyService companyService)
         {
             _companyService = companyService;
         }
@@ -21,5 +24,13 @@ namespace study.Controllers
         {
             return  CreateActionResult(await _companyService.SaveAsync(request));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            return CreateActionResult(await _companyService.GetAllAsync());
+        }
+
+
     }
 }

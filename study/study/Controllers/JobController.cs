@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using study.DTOs;
 using study.Services;
+using study.Services.Interfaces;
 
 namespace study.Controllers
 {
@@ -9,9 +10,9 @@ namespace study.Controllers
     [ApiController]
     public class JobController : BaseController
     {
-        private readonly JobService _jobService;
+        private readonly IJobService _jobService;
 
-        public JobController(JobService jobService)
+        public JobController(IJobService jobService)
         {
             _jobService = jobService;
         }

@@ -17,8 +17,8 @@ namespace study.Controllers
                 return new ObjectResult(null) { StatusCode = response.Status.GetHashCode() };
             }
 
-            return new ObjectResult(response) { StatusCode = response.Status.GetHashCode() };      
-            
+            return new ObjectResult(response) { StatusCode = response.Status.GetHashCode() };
+
         }
     }
 }

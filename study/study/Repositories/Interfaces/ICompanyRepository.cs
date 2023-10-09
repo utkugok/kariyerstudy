@@ -11,5 +11,7 @@ namespace study.Repositories.Interfaces
         Task<Company?> GetByIDAsync(string id);
 
         Task<bool> UpdateCompanyJobPostLimitAsync(string companyId, Company company);
+
+        Task<IReadOnlyCollection<Company>> GetAllAsync();
     }
 }
