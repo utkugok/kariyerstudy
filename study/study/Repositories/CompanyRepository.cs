@@ -13,16 +13,16 @@ namespace study.Repositories
 
         public CompanyRepository(ElasticsearchClient client)
         {
-            _client = client;            
+            _client = client;
         }
 
         public async Task<Company> SaveAsync(Company newCompany)
         {
             newCompany.CreatedAt = DateTime.Now;
 
-            var response = await _client.IndexAsync(newCompany, x=>x.Index(indexName).Id(Guid.NewGuid().ToString()));
+            var response = await _client.IndexAsync(newCompany, x => x.Index(indexName).Id(Guid.NewGuid().ToString()));
 
-            if(!response.IsValidResponse)
+            if (!response.IsValidResponse)
             {
                 throw new Exception($"create company error. {response.DebugInformation}");
             }
@@ -34,30 +34,22 @@ namespace study.Repositories
 
         public async Task<Company?> SearchByPhoneNumberAsync(string phoneNumber)
         {
-            var check = await _client.SearchAsync<Company>(s => s.
+            var response = await _client.SearchAsync<Company>(s => s.
             Index(indexName)
-            .From(0)
-            .Size(10)
             .Query(q => q.
                 Term(t => t.PhoneNumber, phoneNumber)));
 
-            if (!check.IsValidResponse)
+            if (response.ApiCallDetails.HttpStatusCode is 404)
             {
-                throw new Exception($"search company error. {check.DebugInformation}");
+                return null;
             }
-
-            return check.Documents.FirstOrDefault();
-        }
-
-        public async Task<Company?> GetByIDAsync(string id)
-        {
-            var response = await _client.GetAsync<Company>(id,idx=>idx.Index(indexName)) ;
 
             if (!response.IsValidResponse)
             {
-                throw new Exception($"Check your company id: {id}");
+                throw new Exception($"search company error. {response.DebugInformation}");
             }
-            return response.Source;
+
+            return response.Documents.FirstOrDefault();
         }
 
         public async Task<bool> UpdateCompanyJobPostLimitAsync(string companyId, Company company)
@@ -76,22 +68,57 @@ namespace study.Repositories
 
         public async Task<IReadOnlyCollection<Company>> GetAllAsync()
         {
-            var response = await _client.SearchAsync<Company>(s=>s
-            .Index(indexName)
-            .Query(q=>q
-            .MatchAll()));
-
-            foreach (var hit in response.Hits)
+            try
             {
-                hit.Source.Id = hit.Id;
+                var response = await _client.SearchAsync<Company>(s => s
+                .Index(indexName)
+                .From(0)
+                .Size(10000)
+                .Query(q => q
+                .MatchAll()));
+
+                if(response.ApiCallDetails.HttpStatusCode is 404)
+                {
+                    return null;
+                }
+
+                if (!response.IsValidResponse)
+                {
+                    throw new Exception($"company getall error. {response.DebugInformation}");
+                }
+
+
+                foreach (var hit in response.Hits)
+                {
+                    hit.Source.Id = hit.Id;
+                }
+
+                return response.Documents;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            
+        }
+
+        public async Task<Company?> GetByIdAsync(string companyId)
+        {
+            var response = await _client.GetAsync<Company>(companyId, idx => idx.Index(indexName));
+
+            if (response.ApiCallDetails.HttpStatusCode is 404)
+            {
+                return null;
             }
 
             if (!response.IsValidResponse)
             {
-                throw new Exception($"company getall error. {response.DebugInformation}");
+                throw new Exception($"Check your company id: {companyId}");
             }
 
-            return response.Documents;
+            response.Source.Id = companyId;
+
+            return response.Source;
         }
     }
 }

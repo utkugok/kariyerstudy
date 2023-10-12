@@ -8,10 +8,10 @@ namespace study.Repositories.Interfaces
 
         Task<Company?> SearchByPhoneNumberAsync(string phoneNumber);
 
-        Task<Company?> GetByIDAsync(string id);
-
         Task<bool> UpdateCompanyJobPostLimitAsync(string companyId, Company company);
 
         Task<IReadOnlyCollection<Company>> GetAllAsync();
+
+        Task<Company?> GetByIdAsync(string companyId);
     }
 }

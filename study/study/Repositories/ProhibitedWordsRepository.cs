@@ -36,31 +36,36 @@ namespace study.Repositories
 
         public async Task<ProhibitedWord?> SearchByProhibitedWordAsync(string prohibitedWord)
         {
-            var check = await _client.SearchAsync<ProhibitedWord>(s => s.
+            var response = await _client.SearchAsync<ProhibitedWord>(s => s.
             Index(indexName)
-            .From(0)
-            .Size(10)
             .Query(q => q.
                 Term(t => t.Word, prohibitedWord)));
 
-            if (!check.IsValidResponse)
+            if (response.ApiCallDetails.HttpStatusCode is 404)
             {
-                throw new Exception($"search prohibitedword error. {check.DebugInformation}");
+                return null;
             }
 
-            return check.Documents.FirstOrDefault();
+            if (!response.IsValidResponse)
+            {
+                throw new Exception($"search prohibitedword error. {response.DebugInformation}");
+            }
+
+            return response.Documents.FirstOrDefault();
         }
 
         public async Task<IReadOnlyCollection<ProhibitedWord>> GetAllAsync()
         {
             var response = await _client.SearchAsync<ProhibitedWord>(s => s
            .Index(indexName)
+           .From(0)
+           .Size(10000)
            .Query(q => q
            .MatchAll()));
 
-            foreach (var hit in response.Hits)
+            if (response.ApiCallDetails.HttpStatusCode is 404)
             {
-                hit.Source.Id = hit.Id;
+                return null;
             }
 
             if (!response.IsValidResponse)
@@ -68,7 +73,24 @@ namespace study.Repositories
                 throw new Exception($"prohibitedwords getall error. {response.DebugInformation}");
             }
 
+            foreach (var hit in response.Hits)
+            {
+                hit.Source.Id = hit.Id;
+            }
+
             return response.Documents;
+        }
+
+        public async Task<bool> DeleteByIdAsync(string prohibitedWordId)
+        {
+            var response = await _client.DeleteAsync(indexName, prohibitedWordId);
+
+            if (!response.IsValidResponse)
+            {
+                throw new Exception($"prohibitedwords getall error. {response.DebugInformation}");
+            }
+
+            return true;
         }
     }
 }

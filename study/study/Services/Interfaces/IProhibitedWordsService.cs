@@ -8,6 +8,10 @@ namespace study.Services.Interfaces
 
         Task<ResponseDto<List<ProhibitedWordDto>>> GetAllAsync();
 
-        bool CheckProhibitedWordInDescription(string description);
+        Task<ResponseDto<bool>> DeleteByIdAsync(string prohibitedWordId);
+
+        Task<bool> CheckProhibitedWordInDescriptionAsync(string description);
+
+        
     }
 }

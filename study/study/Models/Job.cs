@@ -12,13 +12,10 @@ namespace study.Models
     {
         public string Id { get; set; } = null!;
 
-        [Required(ErrorMessage = "Pozisyon zorunlu bir alan.")]
         public string Position { get; set; } = null!;
 
-        [Required(ErrorMessage = "İlan açıklaması zorunlu bir alan.")]
         public string Description { get; set; } = null!;
 
-        [Required(ErrorMessage = "İlanın yayında kalma süresi zorunlu bir alan.")]
         public int DurationInDays { get; set; }
 
         public int Status { get; set; } // Status, 1 aktif, 0 pasif
@@ -35,11 +32,9 @@ namespace study.Models
 
         public string CompanyId { get; set; } = null!;
 
-        //public Company Company { get; set; }
-
         public JobDto CreateDto()
         {
-            return new JobDto(Id, Position, Description, DurationInDays, Quality, Benefits, WorkType, Salary, CreatedAt);
+            return new JobDto(Id, CompanyId, Position, Description, DurationInDays, Quality, Benefits, WorkType, Salary, CreatedAt);
         }
     }
 }

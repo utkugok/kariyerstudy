@@ -12,7 +12,6 @@ namespace study.Extensions
             var password = configuration.GetSection("Elastic")["Password"];
             var url = configuration.GetSection("Elastic")["Url"];
             var settings = new ElasticsearchClientSettings(new Uri(url!))
-                .Authentication(new BasicAuthentication(userName!, password!))
                 .DefaultMappingFor<Company>(i => i
                     .IndexName("companies")
                     .IdProperty(p => p.PhoneNumber))

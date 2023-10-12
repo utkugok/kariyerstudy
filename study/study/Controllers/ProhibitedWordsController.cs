@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.OutputCaching;
 using study.DTOs;
 using study.Services;
 using study.Services.Interfaces;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace study.Controllers
 {
@@ -19,17 +20,29 @@ namespace study.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Save(ProhibitedWordCreateDto request)
+        [SwaggerOperation(
+            Summary = "SaveAsync",
+            Description = "Save prohibitedWord",
+            OperationId = "SaveAsync")]
+        public async Task<IActionResult> SaveAsync(ProhibitedWordCreateDto request)
         {
             return CreateActionResult(await _prohibitedWords.SaveAsync(request));
         }
 
         [HttpGet]
-        [OutputCache]
+        [SwaggerOperation(
+            Summary = "GetAllAsync",
+            Description = "GetAll prohibitedWords",
+            OperationId = "GetAllAsync")]
         public async Task<IActionResult> GetAllAsync()
         {
             return CreateActionResult(await _prohibitedWords.GetAllAsync());
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> DeleteByIdAsync(string prohibitedWordId)
+        //{
+        //    return CreateActionResult(await _prohibitedWords.DeleteByIdAsync(prohibitedWordId));
+        //}
     }
 }

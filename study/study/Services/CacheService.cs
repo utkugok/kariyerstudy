@@ -17,7 +17,6 @@ namespace study.Services
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -38,8 +37,7 @@ namespace study.Services
             }
             catch (Exception ex)
             {
-
-                throw;
+                throw ex;
             }
         }
 
@@ -59,8 +57,7 @@ namespace study.Services
             }
             catch (Exception ex)
             {
-
-                throw;
+                throw ex;
             }
         }
     }

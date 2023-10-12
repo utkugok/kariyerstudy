@@ -12,6 +12,10 @@ namespace study.Repositories.Interfaces
 
         Task<IReadOnlyCollection<ProhibitedWord>> GetAllAsync();
 
+        Task<bool> DeleteByIdAsync(string prohibitedWordId);
+
+        
+
 
 
     }

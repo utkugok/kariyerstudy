@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Formatters;
+﻿using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Net;
 
 namespace study.DTOs
@@ -24,6 +25,18 @@ namespace study.DTOs
         public static ResponseDto<T> Fail(string error, HttpStatusCode status)
         {
             return new ResponseDto<T> { Errors = new List<string> { error }, Status = status };
+        }
+
+        public static ResponseDto<T> Fail(List<ValidationFailure> errors, HttpStatusCode status)
+        {
+            var errorList = new List<string>();
+
+            foreach (var item in errors)
+            {
+                errorList.Add(item.ErrorMessage);
+            }
+
+            return new ResponseDto<T> { Errors = errorList, Status = status };
         }
     }
 }

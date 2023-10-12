@@ -74,23 +74,45 @@ namespace study.Services
             }
         }
 
-        public bool CheckProhibitedWordInDescription(string description)
+        public async Task<bool> CheckProhibitedWordInDescriptionAsync(string description)
         {
-            var cacheWords = _cacheService.GetData<IEnumerable<ProhibitedWord>>("prohibitedwords")?.ToList();
+            var prohibitedWords = _cacheService.GetData<IEnumerable<ProhibitedWord>>("prohibitedwords")?.ToList();
             var isProhibitedWord = new ProhibitedWordCreateDto(description).CreateProhibitedWord();
 
-            if (cacheWords is not null)
+
+            if (prohibitedWords is null)
             {
-                foreach (var cacheword in cacheWords)
+                var prohibitedWordsFromRepo = await _prohibitedWordsRepository.GetAllAsync();
+                prohibitedWords = prohibitedWordsFromRepo.ToList();
+
+                _cacheService.SetData<IEnumerable<ProhibitedWord>>("prohibitedwords", prohibitedWords, DateTimeOffset.MaxValue);
+            }
+
+            foreach (var prohibitedWord in prohibitedWords)
+            {
+                if (isProhibitedWord.Word.Contains(prohibitedWord.Word))
                 {
-                    if(isProhibitedWord.Word.Contains(cacheword.Word))
-                    {
-                        return true;                    
-                    }
+                    return true;
                 }
             }
 
             return false;
+        }
+
+        public async Task<ResponseDto<bool>> DeleteByIdAsync(string prohibitedWordId)
+        {
+            try
+            {
+                var isSuccess = await _prohibitedWordsRepository.DeleteByIdAsync(prohibitedWordId);
+                
+                var prohibitedWords = _cacheService.RemoveData(prohibitedWordId);
+
+                return ResponseDto<bool>.Success(isSuccess, HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                return ResponseDto<bool>.Fail(ex.Message, HttpStatusCode.InternalServerError);
+            }
         }
     }
 }

@@ -7,5 +7,7 @@ namespace study.Services.Interfaces
         Task<ResponseDto<CompanyDto>> SaveAsync(CompanyCreateDto request);
 
         Task<ResponseDto<List<CompanyDto>>> GetAllAsync();
+
+        Task<ResponseDto<CompanyDto>> GetByIdAsync(string companyId);
     }
 }

@@ -10,16 +10,12 @@ namespace study.Models
     {
         public string Id { get; set; } = null!;
 
-        [Required(ErrorMessage = "Telefon numarası zorunlu bir alan.")]
         public string PhoneNumber { get; set; } = null!;
 
-        [Required(ErrorMessage = "Firma adı zorunlu bir alan.")]
         public string CompanyName { get; set; } = null!;
 
-        [Required(ErrorMessage = "Adres zorunlu bir alan.")]
         public string Address { get; set; } = null!;
 
-        [Required(ErrorMessage = "Yayınlayabileceği ilan hakkı sayısı zorunlu bir alan.")]
         public int JobPostLimit { get; set; }
 
         public DateTime CreatedAt { get; set; }
