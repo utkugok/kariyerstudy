@@ -2,6 +2,7 @@
 using study.Models;
 using study.Repositories.Interfaces;
 using System.ComponentModel.Design;
+using System.Net;
 
 namespace study.Repositories
 {
@@ -40,7 +41,7 @@ namespace study.Repositories
             .Query(q => q.
                 Term(t => t.Status, 1))); // get active jobs
 
-            if (response.ApiCallDetails.HttpStatusCode is 404)
+            if (response.ApiCallDetails.HttpStatusCode is (int?)HttpStatusCode.NotFound)
             {
                 return null;
             }
@@ -62,7 +63,7 @@ namespace study.Repositories
         {
             var response = await _client.GetAsync<Job>(jobId, idx => idx.Index(indexName));
 
-            if (response.ApiCallDetails.HttpStatusCode is 404)
+            if (response.ApiCallDetails.HttpStatusCode is (int?)HttpStatusCode.NotFound)
             {
                 return null;
             }
@@ -83,7 +84,7 @@ namespace study.Repositories
 
             if (!response.IsValidResponse)
             {
-                throw new Exception($"prohibitedwords getall error. {response.DebugInformation}");
+                throw new Exception($"job deleteById error. {response.DebugInformation}");
             }
 
             return true;

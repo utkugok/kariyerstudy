@@ -79,20 +79,26 @@ namespace study.Services
             var prohibitedWords = _cacheService.GetData<IEnumerable<ProhibitedWord>>("prohibitedwords")?.ToList();
             var isProhibitedWord = new ProhibitedWordCreateDto(description).CreateProhibitedWord();
 
-
             if (prohibitedWords is null)
             {
                 var prohibitedWordsFromRepo = await _prohibitedWordsRepository.GetAllAsync();
-                prohibitedWords = prohibitedWordsFromRepo.ToList();
 
-                _cacheService.SetData<IEnumerable<ProhibitedWord>>("prohibitedwords", prohibitedWords, DateTimeOffset.MaxValue);
+                if(prohibitedWordsFromRepo is not null)
+                {
+                    prohibitedWords = prohibitedWordsFromRepo?.ToList();
+
+                    _cacheService.SetData<IEnumerable<ProhibitedWord>>("prohibitedwords", prohibitedWords, DateTimeOffset.MaxValue);
+                }
             }
 
-            foreach (var prohibitedWord in prohibitedWords)
+            if(prohibitedWords is not null)
             {
-                if (isProhibitedWord.Word.Contains(prohibitedWord.Word))
+                foreach (var prohibitedWord in prohibitedWords)
                 {
-                    return true;
+                    if (isProhibitedWord.Word.Contains(prohibitedWord.Word))
+                    {
+                        return true;
+                    }
                 }
             }
 

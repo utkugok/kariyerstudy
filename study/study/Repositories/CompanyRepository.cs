@@ -2,6 +2,7 @@
 using study.Models;
 using study.Repositories.Interfaces;
 using System.ComponentModel.Design;
+using System.Net;
 using System.Text.Json;
 
 namespace study.Repositories
@@ -39,7 +40,7 @@ namespace study.Repositories
             .Query(q => q.
                 Term(t => t.PhoneNumber, phoneNumber)));
 
-            if (response.ApiCallDetails.HttpStatusCode is 404)
+            if (response.ApiCallDetails.HttpStatusCode is (int?)HttpStatusCode.NotFound)
             {
                 return null;
             }
@@ -77,7 +78,7 @@ namespace study.Repositories
                 .Query(q => q
                 .MatchAll()));
 
-                if(response.ApiCallDetails.HttpStatusCode is 404)
+                if(response.ApiCallDetails.HttpStatusCode is (int?)HttpStatusCode.NotFound)
                 {
                     return null;
                 }
@@ -106,7 +107,7 @@ namespace study.Repositories
         {
             var response = await _client.GetAsync<Company>(companyId, idx => idx.Index(indexName));
 
-            if (response.ApiCallDetails.HttpStatusCode is 404)
+            if (response.ApiCallDetails.HttpStatusCode is (int?)HttpStatusCode.NotFound)
             {
                 return null;
             }

@@ -39,10 +39,14 @@ namespace study.Controllers
             return CreateActionResult(await _prohibitedWords.GetAllAsync());
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> DeleteByIdAsync(string prohibitedWordId)
-        //{
-        //    return CreateActionResult(await _prohibitedWords.DeleteByIdAsync(prohibitedWordId));
-        //}
+        [HttpPost("prohibitedWordId")]
+        [SwaggerOperation(
+            Summary = "DeleteByIdAsync",
+            Description = "DeleteById prohibitedWords",
+            OperationId = "DeleteByIdAsync")]
+        public async Task<IActionResult> DeleteByIdAsync(string prohibitedWordId)
+        {
+            return CreateActionResult(await _prohibitedWords.DeleteByIdAsync(prohibitedWordId));
+        }
     }
 }

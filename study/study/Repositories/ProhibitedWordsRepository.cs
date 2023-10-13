@@ -41,7 +41,7 @@ namespace study.Repositories
             .Query(q => q.
                 Term(t => t.Word, prohibitedWord)));
 
-            if (response.ApiCallDetails.HttpStatusCode is 404)
+            if (response.ApiCallDetails.HttpStatusCode is (int?)HttpStatusCode.NotFound)
             {
                 return null;
             }
@@ -63,7 +63,7 @@ namespace study.Repositories
            .Query(q => q
            .MatchAll()));
 
-            if (response.ApiCallDetails.HttpStatusCode is 404)
+            if (response.ApiCallDetails.HttpStatusCode is (int?)HttpStatusCode.NotFound)
             {
                 return null;
             }

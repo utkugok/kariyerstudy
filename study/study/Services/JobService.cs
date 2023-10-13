@@ -46,7 +46,9 @@ namespace study.Services
                 {
                     throw new Exception("İlan yayınlama hakkınız yetersizdir.");
                 }
+
                 var job = request.CreateJob();
+
                 job.Quality = QualityScore(job.WorkType, job.Salary, job.Benefits, job.Description);
 
                 var prohibitedWordInDescription = await _prohibitedWordsService.CheckProhibitedWordInDescriptionAsync(job.Description);
@@ -97,6 +99,7 @@ namespace study.Services
         private int QualityScore(string? workType, decimal? salary, string? benefits, string description)
         {
             int qualityScore = 0;
+
             if (workType is not null)
             {
                 qualityScore += 1;
