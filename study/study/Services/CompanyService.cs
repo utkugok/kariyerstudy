@@ -35,7 +35,7 @@ namespace study.Services
 
                 if (checkCompany is not null)
                 {
-                    throw new Exception($"{request.phoneNumber} telefon numarası zaten kayıtlıdır.");
+                    throw new Exception($"{request.phoneNumber} phone number already exists.");
                 }
 
                 var responseCompany = await _companyRepository.SaveAsync(company);

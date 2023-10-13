@@ -85,9 +85,14 @@ namespace study.Repositories
         {
             var response = await _client.DeleteAsync(indexName, prohibitedWordId);
 
+            if (response.ApiCallDetails.HttpStatusCode is (int?)HttpStatusCode.NotFound)
+            {
+                return true;
+            }
+
             if (!response.IsValidResponse)
             {
-                throw new Exception($"prohibitedwords getall error. {response.DebugInformation}");
+                throw new Exception($"prohibitedword delete error. {response.DebugInformation}");
             }
 
             return true;

@@ -24,7 +24,7 @@ namespace study.Services
             {
                 if (string.IsNullOrWhiteSpace(request.prohibitedWord))
                 {
-                    return ResponseDto<ProhibitedWordDto>.Fail("Yasaklı kelime boş olamaz.", HttpStatusCode.BadRequest);
+                    return ResponseDto<ProhibitedWordDto>.Fail("prohibited word cannot be null or empty.", HttpStatusCode.BadRequest);
                 }
                 var prohibitedWord = request.CreateProhibitedWord();
 
@@ -34,7 +34,7 @@ namespace study.Services
 
                 if (searchProhibitedWord is not null)
                 {
-                    throw new Exception($"'{prohibitedWord.Word}'yasaklı kelimesi zaten kayıtlıdır.");
+                    throw new Exception($"'{prohibitedWord.Word}' word already exists.");
                 }
 
                 var responseProhibitedWord = await _prohibitedWordsRepository.SaveAsync(prohibitedWord);
@@ -48,6 +48,7 @@ namespace study.Services
                 {
                     cacheWords.Add(responseProhibitedWord);
                 }
+
                 _cacheService.SetData<IEnumerable<ProhibitedWord>>("prohibitedwords", cacheWords, DateTimeOffset.MaxValue);
 
                 return ResponseDto<ProhibitedWordDto>.Success(responseProhibitedWord.CreateDto(), HttpStatusCode.Created);
@@ -63,6 +64,11 @@ namespace study.Services
             try
             {
                 var prohibitedWords = await _prohibitedWordsRepository.GetAllAsync();
+
+                if (prohibitedWords is null)
+                {
+                    return ResponseDto<List<ProhibitedWordDto>>.Success(null, HttpStatusCode.OK);
+                }
 
                 var prohibitedWordListDto = prohibitedWords.Select(x => new ProhibitedWordDto(x.Id, x.Word, x.CreatedAt)).ToList();
 

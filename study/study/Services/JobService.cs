@@ -44,7 +44,7 @@ namespace study.Services
 
                 if (company.JobPostLimit is 0)
                 {
-                    throw new Exception("İlan yayınlama hakkınız yetersizdir.");
+                    throw new Exception("Job post limit is insufficient.");
                 }
 
                 var job = request.CreateJob();
