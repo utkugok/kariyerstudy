@@ -82,6 +82,11 @@ namespace study.Repositories
         {
             var response = await _client.DeleteAsync(indexName, jobId);
 
+            if (response.ApiCallDetails.HttpStatusCode is (int?)HttpStatusCode.NotFound)
+            {
+                return false;
+            }
+
             if (!response.IsValidResponse)
             {
                 throw new Exception($"job deleteById error. {response.DebugInformation}");

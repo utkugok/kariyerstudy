@@ -39,7 +39,7 @@ namespace study.Services
 
                 if (company is null)
                 {
-                    throw new Exception("Check your company id");
+                    throw new Exception("Company not found. Check your company id");
                 }
 
                 if (company.JobPostLimit is 0)
@@ -124,7 +124,7 @@ namespace study.Services
 
                 if (job is null)
                 {
-                    throw new Exception($"Check your job id : {jobId}");
+                    throw new Exception($"Job not found. Check your job id : {jobId}");
                 }
 
                 return ResponseDto<JobDto>.Success(job.CreateDto(), HttpStatusCode.Created);
@@ -140,6 +140,11 @@ namespace study.Services
             try
             {
                 var isSuccess = await _jobRepository.DeleteByIdAsync(jobId);
+
+                if (isSuccess is false)
+                {
+                    throw new Exception($"Job not found. Check your job id : {jobId}");
+                }
 
                 return ResponseDto<bool>.Success(isSuccess, HttpStatusCode.OK);
             }

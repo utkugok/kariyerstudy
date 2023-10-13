@@ -77,7 +77,7 @@ namespace study.Services
 
                 if (company is null)
                 {
-                    throw new Exception($"Check your company id : {companyId}");
+                    throw new Exception($"Company not found. Check your company id : {companyId}");
                 }
 
                 return ResponseDto<CompanyDto>.Success(company.CreateDto(), HttpStatusCode.Created);
